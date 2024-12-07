@@ -1,6 +1,8 @@
 let humanScore = 0;
 let computerScore = 0;
-
+const choice = document.querySelector("#choices");
+    
+choice.addEventListener("click", playRound);
 
 
 function getComputerChoice() {
@@ -13,18 +15,8 @@ function getComputerChoice() {
         return "scissors";
     }
 }
-function getHumanChoice() {
-    let input = prompt("Rock, Paper, Scissors?");
-    let lowCaseInput = input.toLowerCase();
-    console.log(lowCaseInput)
-    if (lowCaseInput !== "rock" && lowCaseInput !== "paper" && lowCaseInput !== "scissors") {
-        console.log(input + " is neither Rock, Paper or Scissors.");
-        lowCaseInput = getHumanChoice();
-    }
-    return lowCaseInput;
-}
+    
 function checkWinner(humanChoice, computerChoice) {
-    console.log(humanChoice + " " + computerChoice);
     if (humanChoice == "rock") {
         if (computerChoice == "rock")  return "draw";
         if (computerChoice == "paper") return "loss";
@@ -41,9 +33,11 @@ function checkWinner(humanChoice, computerChoice) {
         if (computerChoice == "scissors") return "draw"; 
     }
 }
-function playRound(humanChoice, computerChoice) {
-    let result;
-    switch (checkWinner(humanChoice, computerChoice)) {
+function playRound(humanChoice) {
+    const computerChoice = getComputerChoice();
+    let result = checkWinner(humanChoice.target.id, computerChoice);
+    const resultDOM = document.querySelector("#result");
+    switch (result) {
         case "draw": 
             result = "It's a draw, try again.";
             break;
@@ -56,16 +50,19 @@ function playRound(humanChoice, computerChoice) {
             humanScore++;
             break;
     }
-    console.log("The computer chose " + computerChoice + "\n" + result.concat("\nScore: YOU: ", humanScore.toString(), " ||  COMPUTER: ", computerScore.toString()));
+    resultDOM.textContent = "The computer chose " + computerChoice + "\n" + result.concat("\nScore: YOU: ", humanScore.toString(), " ||  COMPUTER: ", computerScore.toString());
+    checkIfGameOver(); 
 }
-function playGame() {
-    while(humanScore < 5 && computerScore < 5) {
-        playRound(getHumanChoice(), getComputerChoice());
-    }
+
+function checkIfGameOver() {
     if (humanScore == 5) {
-        console.log("Congrats, you won the game!");
+        const winner = document.querySelector("#winner");
+        winner.textContent = "Congrats, you won the game!";
+        choice.removeEventListener("click", playRound);
     }
     if (computerScore == 5) {
-        console.log("You lost the game!");
+        const winner = document.querySelector("#winner");
+        winner.textContent = "You lost the game!";
+        choice.removeEventListener("click", playRound);
     }
 }
